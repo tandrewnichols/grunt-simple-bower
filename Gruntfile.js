@@ -47,7 +47,7 @@ module.exports = function(grunt) {
       },
       int: {
         options: {
-          timeout: 8000
+          timeout: 20000
         },
         src: ['test/integration.coffee']
       }
