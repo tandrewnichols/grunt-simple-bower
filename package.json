@@ -1,0 +1,56 @@
+{
+  "name": "grunt-simple-bower",
+  "description": "A simple API for using bower via grunt",
+  "version": "1.0.0",
+  "main": "tasks/bower.js",
+  "scripts": {
+    "test": "grunt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tandrewnichols/grunt-simple-bower.git"
+  },
+  "keywords": [
+    "gruntplugin",
+    "bower",
+    "grunt",
+    "plugin",
+    "simple"
+  ],
+  "author": {
+    "name": "Andrew Nichols",
+    "email": "tandrewnichols@gmail.com",
+    "url": "www.tandrewnichols.me"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tandrewnichols/grunt-simple-bower/issues"
+  },
+  "homepage": "https://github.com/tandrewnichols/grunt-simple-bower",
+  "config": {
+    "blanket": {
+      "pattern": [
+        "grunt-simple-bower/tasks"
+      ]
+    }
+  },
+  "dependencies": {
+    "simple-cli": "^2.0.0"
+  },
+  "devDependencies": {
+    "coffee-script": "^1.10.0",
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "^0.7.0",
+    "grunt-contrib-jshint": "^0.12.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-mocha-cov": "^0.4.0",
+    "grunt-mocha-test": "^0.12.7",
+    "grunt-open": "^0.2.3",
+    "grunt-travis-matrix": "^1.0.0",
+    "jshint-stylish": "^2.1.0",
+    "mocha": "^2.4.5",
+    "mocha-given": "^0.1.3",
+    "mocha-lcov-reporter": "^1.0.0",
+    "should": "^8.2.1"
+  }
+}
