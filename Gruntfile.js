@@ -6,11 +6,12 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-open');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-travis-matrix');
-
+  grunt.loadTasks('./tasks');
 
   grunt.initConfig({
     clean: {
-      coverage: ['coverage']
+      coverage: ['coverage'],
+      bower: ['bower.json', 'bower_components']
     },
     jshint: {
       options: {
@@ -24,26 +25,31 @@ module.exports = function(grunt) {
       },
       all: ['tasks/**/*.js']
     },
-    matrix: {
-      v4: 'codeclimate-test-reporter < coverage/lcov.info'
+    exec: {
+      codeclimate: 'codeclimate-test-reporter < coverage/coverage.lcov'
     },
-    travis: {
-      options: {
-        targets: {
-          test: '{{ version }}',
-          when: 'v4',
-          tasks: ['istanbul:unit', 'matrix:v4']
-        }
+    travisMatrix: {
+      v4: {
+        test: function() {
+          return /^v4/.test(process.version);
+        },
+        tasks: ['mochacov:lcov', 'exec:codeclimate']
       }
     },
     mochaTest: {
       options: {
         reporter: 'spec',
         ui: 'mocha-given',
-        require: 'coffee-script/register'
+        require: ['coffee-script/register', 'should', 'should-sinon']
       },
-      test: {
-        src: ['test/helpers/**/*.coffee', 'test/**/*.coffee']
+      unit: {
+        src: ['test/bower.coffee']
+      },
+      int: {
+        options: {
+          timeout: 8000
+        },
+        src: ['test/integration.coffee']
       }
     },
     mochacov: {
@@ -52,7 +58,7 @@ module.exports = function(grunt) {
           reporter: 'mocha-lcov-reporter',
           ui: 'mocha-given',
           instrument: true,
-          require: 'coffee-script/register',
+          require: ['coffee-script/register', 'should', 'should-sinon'],
           output: 'coverage/coverage.lcov'
         },
         src: ['test/**/*.coffee'],
@@ -61,7 +67,7 @@ module.exports = function(grunt) {
         options: {
           reporter: 'html-cov',
           ui: 'mocha-given',
-          require: 'coffee-script/register',
+          require: ['coffee-script/register', 'should', 'should-sinon'],
           output: 'coverage/coverage.html'
         },
         src: ['test/**/*.coffee']
@@ -80,11 +86,29 @@ module.exports = function(grunt) {
           atBegin: true
         }
       }
+    },
+    bower: {
+      install: {
+        options: {
+          simple: {
+            args: 'lodash'
+          }
+        }
+      },
+      uninstall: {
+        options: {
+          simple: {
+            args: 'lodash'
+          }
+        }
+      }
     }
   });
 
-  grunt.registerTask('mocha', ['mochaTest:test']);
+  grunt.registerTask('mocha', ['unit', 'int']);
+  grunt.registerTask('unit', ['mochaTest:unit']);
+  grunt.registerTask('int', ['mochaTest:int', 'clean:bower']);
   grunt.registerTask('default', ['jshint:all', 'mocha']);
   grunt.registerTask('coverage', ['mochacov:html']);
-  grunt.registerTask('ci', ['jshint:all', 'mocha', 'travis']);
+  grunt.registerTask('ci', ['jshint:all', 'mocha', 'travisMatrix']);
 };
