@@ -1,11 +1,11 @@
 module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-mocha-cov');
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-open');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-travis-matrix');
+  grunt.loadNpmTasks('grunt-simple-istanbul');
   grunt.loadNpmTasks('grunt-exec');
   grunt.loadTasks('./tasks');
 
@@ -27,14 +27,14 @@ module.exports = function(grunt) {
       all: ['tasks/**/*.js']
     },
     exec: {
-      codeclimate: 'codeclimate-test-reporter < coverage/coverage.lcov'
+      codeclimate: 'codeclimate-test-reporter < coverage/lcov.info'
     },
     travisMatrix: {
       v4: {
         test: function() {
           return /^v4/.test(process.version);
         },
-        tasks: ['mochacov:lcov', 'exec:codeclimate']
+        tasks: ['istanbul:unit', 'exec:codeclimate']
       }
     },
     mochaTest: {
@@ -53,30 +53,18 @@ module.exports = function(grunt) {
         src: ['test/integration.coffee']
       }
     },
-    mochacov: {
-      lcov: {
+    istanbul: {
+      unit: {
         options: {
-          reporter: 'mocha-lcov-reporter',
-          ui: 'mocha-given',
-          instrument: true,
-          require: ['coffee-script/register', 'should', 'should-sinon'],
-          output: 'coverage/coverage.lcov'
+          root: 'tasks',
+          dir: 'coverage'
         },
-        src: ['test/**/*.coffee'],
+        cmd: 'cover grunt unit'
       },
-      html: {
-        options: {
-          reporter: 'html-cov',
-          ui: 'mocha-given',
-          require: ['coffee-script/register', 'should', 'should-sinon'],
-          output: 'coverage/coverage.html'
-        },
-        src: ['test/**/*.coffee']
-      }
     },
     open: {
       coverage: {
-        path: 'coverage/coverage.html'
+        path: 'coverage/lcov-report/index.html'
       }
     },
     watch: {
@@ -110,6 +98,6 @@ module.exports = function(grunt) {
   grunt.registerTask('unit', ['mochaTest:unit']);
   grunt.registerTask('int', ['mochaTest:int', 'clean:bower']);
   grunt.registerTask('default', ['jshint:all', 'mocha']);
-  grunt.registerTask('coverage', ['mochacov:html']);
+  grunt.registerTask('coverage', ['istanbul:unit']);
   grunt.registerTask('ci', ['jshint:all', 'mocha', 'travisMatrix']);
 };
