@@ -22,10 +22,54 @@ Alternatively, install [task-master](http://github.com/tandrewnichols/task-maste
 
 ## The "bower" task
 
+This plugin uses the [simple-cli](https://github.com/tandrewnichols/simple-cli) interface, so any of the options avaiable there will work with this plugin. A summary of the more salient points are included below.
+
 ### Overview
 
-In your project's Gruntfile, add a section named `bower` to the data object passed into `grunt.initConfig()`.
+The `bower` task is a multi-task, where the target is (usually) the bower command to run. Options to bower can be supplied in the options object, and there are various options supported by the library itself which must be under `options.simple`. In general, the target is the bower command to run and anything inside `options.simple.args` will be added as arguments. If you need more than one target that runs the same bower command, you can set `options.simple.cmd` to the bower command and name that task target whatever you want. Simple-cli actually does a wide variety of things, so rather than duplicating the documentation for that here, please refer to that (very thorough and example-filled) documentation.
 
+### Examples
+
+```js
+grunt.initConfig({
+  bower: {
+    link: {}, // Runs "bower link"
+    list: {}, // Runs "bower list"
+    listJson: { // Runs "bower list --json"
+      options: {
+        json: true,
+        simple: {
+          cmd: 'list'
+        }
+      }
+    },
+    info: { // Runs "bower info angular -V --no-color"
+      options: {
+        V: true,
+        noColor: true,
+        simple: {
+          args: ['angular']
+        }
+      }
+    },
+    /**
+     * Perhaps a more useful command...
+     * 
+     * With this you can install a module by running "grunt bower:install --component lodash"
+     * or by running "grunt.config.set('component', 'lodash')" in a previous task. Or simply
+     * run "grunt bower:install" and you will be prompted for a component
+     *
+     **/
+    install: {
+      options: {
+        simple: {
+          args: ['{{ component }}']
+        }
+      }
+    }
+  }
+});
+```
 
 ## Contributing
 
