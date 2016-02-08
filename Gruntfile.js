@@ -6,6 +6,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-open');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-travis-matrix');
+  grunt.loadNpmTasks('grunt-exec');
   grunt.loadTasks('./tasks');
 
   grunt.initConfig({
