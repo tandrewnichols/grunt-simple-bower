@@ -36,20 +36,16 @@ grunt.initConfig({
     link: {}, // Runs "bower link"
     list: {}, // Runs "bower list"
     listJson: { // Runs "bower list --json"
+      cmd: 'list',
       options: {
-        json: true,
-        simple: {
-          cmd: 'list'
-        }
+        json: true
       }
     },
     info: { // Runs "bower info angular -V --no-color"
+      args: ['angular']
       options: {
         V: true,
-        noColor: true,
-        simple: {
-          args: ['angular']
-        }
+        noColor: true
       }
     },
     /**
@@ -61,11 +57,7 @@ grunt.initConfig({
      *
      **/
     install: {
-      options: {
-        simple: {
-          args: ['{{ component }}']
-        }
-      }
+      args: ['{{ component }}']
     }
   }
 });

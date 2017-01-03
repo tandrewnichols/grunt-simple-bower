@@ -1,12 +1,12 @@
 module.exports = function(grunt) {
-  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-eslint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-open');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-travis-matrix');
   grunt.loadNpmTasks('grunt-simple-istanbul');
-  grunt.loadNpmTasks('grunt-exec');
+  grunt.loadNpmTasks('grunt-shell');
   grunt.loadTasks('./tasks');
 
   grunt.initConfig({
@@ -14,27 +14,24 @@ module.exports = function(grunt) {
       coverage: ['coverage'],
       bower: ['bower.json', 'bower_components']
     },
-    jshint: {
-      options: {
-        reporter: require('jshint-stylish'),
-        eqeqeq: true,
-        es3: true,
-        indent: 2,
-        newcap: true,
-        quotmark: 'single',
-        boss: true
-      },
-      all: ['tasks/**/*.js']
+    eslint: {
+      tasks: {
+        options: {
+          configFile: '.eslint.json',
+          format: 'node_modules/eslint-codeframe-formatter'
+        },
+        src: ['tasks/**/*.js']
+      }
     },
-    exec: {
-      codeclimate: 'codeclimate-test-reporter < coverage/lcov.info'
+    shell: {
+      codeclimate: 'npm run codeclimate'
     },
     travisMatrix: {
       v4: {
         test: function() {
           return /^v4/.test(process.version);
         },
-        tasks: ['istanbul:unit', 'exec:codeclimate']
+        tasks: ['istanbul:unit', 'shell:codeclimate']
       }
     },
     mochaTest: {
@@ -45,6 +42,12 @@ module.exports = function(grunt) {
       },
       unit: {
         src: ['test/bower.coffee']
+      },
+      watch: {
+        options: {
+          reporter: 'dot'
+        },
+        src: ['test/**/*.coffee']
       },
       int: {
         options: {
@@ -57,10 +60,14 @@ module.exports = function(grunt) {
       unit: {
         options: {
           root: 'tasks',
-          dir: 'coverage'
-        },
-        cmd: 'cover grunt unit'
-      },
+          dir: 'coverage',
+          simple: {
+            cmd: 'cover',
+            args: ['grunt', 'unit'],
+            rawArgs: ['--', '--color']
+          }
+        }
+      }
     },
     open: {
       coverage: {
@@ -70,7 +77,7 @@ module.exports = function(grunt) {
     watch: {
       tests: {
         files: ['tasks/**/*.js', 'test/**/*.coffee'],
-        tasks: ['mocha'],
+        tasks: ['mochaTest:watch'],
         options: {
           atBegin: true
         }
@@ -78,18 +85,10 @@ module.exports = function(grunt) {
     },
     bower: {
       install: {
-        options: {
-          simple: {
-            args: 'lodash'
-          }
-        }
+        args: 'lodash'
       },
       uninstall: {
-        options: {
-          simple: {
-            args: 'lodash'
-          }
-        }
+        args: 'lodash'
       }
     }
   });
@@ -97,7 +96,7 @@ module.exports = function(grunt) {
   grunt.registerTask('mocha', ['unit', 'int']);
   grunt.registerTask('unit', ['mochaTest:unit']);
   grunt.registerTask('int', ['mochaTest:int', 'clean:bower']);
-  grunt.registerTask('default', ['jshint:all', 'mocha']);
-  grunt.registerTask('coverage', ['istanbul:unit']);
-  grunt.registerTask('ci', ['jshint:all', 'mocha', 'travisMatrix']);
+  grunt.registerTask('default', ['eslint:tasks', 'mocha']);
+  grunt.registerTask('coverage', ['istanbul:unit', 'open:coverage']);
+  grunt.registerTask('ci', ['eslint:tasks', 'mocha', 'travisMatrix']);
 };
