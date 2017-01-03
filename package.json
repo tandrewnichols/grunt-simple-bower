@@ -4,7 +4,9 @@
   "version": "1.0.0",
   "main": "tasks/bower.js",
   "scripts": {
-    "test": "grunt"
+    "test": "grunt",
+    "travis": "grunt ci",
+    "codeclimate": "codeclimate-test-reporter < coverage/lcov.info"
   },
   "repository": {
     "type": "git",
@@ -27,34 +29,29 @@
     "url": "https://github.com/tandrewnichols/grunt-simple-bower/issues"
   },
   "homepage": "https://github.com/tandrewnichols/grunt-simple-bower",
-  "config": {
-    "blanket": {
-      "pattern": [
-        "grunt-simple-bower/tasks"
-      ]
-    }
-  },
   "dependencies": {
-    "bower": "^1.7.7",
+    "bower": "^1.8.0",
     "simple-cli": "^4.0.0"
   },
   "devDependencies": {
-    "coffee-script": "^1.10.0",
+    "codeclimate-test-reporter": "^0.4.0",
+    "coffee-script": "^1.12.2",
+    "eslint-codeframe-formatter": "^1.0.2",
     "grunt": "^1.0.1",
+    "grunt-cli": "^1.2.0",
     "grunt-contrib-clean": "^1.0.0",
-    "grunt-contrib-jshint": "^1.1.0",
     "grunt-contrib-watch": "^1.0.0",
-    "grunt-exec": "^1.0.1",
+    "grunt-eslint": "^19.0.0",
     "grunt-mocha-test": "^0.13.2",
     "grunt-open": "^0.2.3",
-    "grunt-simple-istanbul": "3.0.2",
+    "grunt-shell": "^2.1.0",
+    "grunt-simple-istanbul": "^3.0.3",
     "grunt-travis-matrix": "^1.0.0",
-    "jshint-stylish": "^2.1.0",
     "mocha": "^3.2.0",
     "mocha-given": "^0.1.3",
-    "proxyquire": "^1.7.4",
+    "proxyquire": "^1.7.10",
     "should": "^11.1.2",
     "should-sinon": "0.0.5",
-    "sinon": "^1.17.3"
+    "sinon": "^1.17.7"
   }
 }
